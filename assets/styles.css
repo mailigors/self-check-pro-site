@@ -228,16 +228,6 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdro
 .ctor-list div{display:flex;gap:11px;font-size:15px;color:#D6DCE0}
 .ctor-list i{color:var(--brand-primary);font-style:normal;flex:none}
 
-/* roles */
-.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.role{border:1px solid var(--border-soft);border-radius:var(--radius-m);overflow:hidden;background:#fff}
-.role-h{padding:18px 22px;border-bottom:1px solid var(--border-soft)}
-.role-h b{font-size:16px;font-weight:600}
-.role-h span{display:block;font-size:13px;color:var(--content-secondary);margin-top:2px}
-.role ul{list-style:none;padding:20px 22px;display:grid;gap:10px}
-.role li{font-size:14.5px;padding-left:24px;position:relative}
-.role li::before{content:"";position:absolute;left:2px;top:8px;width:11px;height:6px;border-left:2px solid var(--brand-primary);border-bottom:2px solid var(--brand-primary);transform:rotate(-45deg)}
-
 code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:rgba(0,0,0,.06);padding:1px 5px;border-radius:5px}
 
 /* pricing */
@@ -284,7 +274,7 @@ footer{border-top:1px solid var(--border-soft);padding:48px 0 40px;background:va
 @media(max-width:960px){
   section{padding:64px 0}
   .hero-grid,.ctor-grid,.cta-box,.pilot-in{grid-template-columns:1fr;gap:40px}
-  .pain-grid,.steps,.f-grid,.roles,.price-grid,.f-top{grid-template-columns:1fr 1fr}
+  .pain-grid,.steps,.f-grid,.price-grid,.f-top{grid-template-columns:1fr 1fr}
   .nav-links{display:none}
   .cta-box{padding:36px}
   .pilot{padding:34px}
@@ -293,7 +283,7 @@ footer{border-top:1px solid var(--border-soft);padding:48px 0 40px;background:va
   .float-card{display:none}
 }
 @media(max-width:620px){
-  .pain-grid,.steps,.f-grid,.roles,.price-grid,.f-top,.types,.niches,.who{grid-template-columns:1fr}
+  .pain-grid,.steps,.f-grid,.price-grid,.f-top,.types,.niches,.who{grid-template-columns:1fr}
   .hero{padding:40px 0 56px}
   .stage{--pscale:.54;height:520px}
   .hero-cta .btn{width:100%}

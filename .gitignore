@@ -1,5 +1,21 @@
+# OS files
 .DS_Store
 Thumbs.db
+._*
+
+# Dependencies and local tooling
 node_modules/
-.env
 .wrangler/
+
+# Local secrets (keep only the example)
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+
+# Temporary files
+*.log
+*.tmp
+*.swp
+*~
