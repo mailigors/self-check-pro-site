@@ -5,17 +5,16 @@ Thumbs.db
 
 # Dependencies and local tooling
 node_modules/
-.wrangler/
 
-# Local secrets (keep only the example)
+# Local secrets
 .env
 .env.*
-!.env.example
-.dev.vars
-.dev.vars.*
 
 # Temporary files
 *.log
 *.tmp
 *.swp
 *~
+
+# GitHub Pages build output
+dist/
