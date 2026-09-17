@@ -62,11 +62,15 @@ Deploy собирает каталог `dist/` и публикует его на
 
 ### Первый запуск
 
-1. В репозитории открыть **Settings → Pages**.
-2. В **Build and deployment → Source** выбрать **GitHub Actions**.
-3. Запушить изменения в `main` или вручную запустить workflow **Deploy**.
+1. В репозитории открыть [Settings → Pages](https://github.com/mailigors/self-check-pro-site/settings/pages).
+2. В **Build and deployment → Source** выбрать **GitHub Actions** (не «Deploy from a branch»).
+3. Сохранить настройки и заново запустить workflow **Deploy** (Actions → Deploy → Run workflow) или запушить коммит в `main`.
 4. После успешного деплоя сайт будет доступен по адресу вида `https://<org>.github.io/<repo>/` или по своему домену.
 5. Для домена `selfcheck.pro` указать его в **Settings → Pages → Custom domain** и настроить DNS у регистратора.
+
+Если деплой падает с `Failed to create deployment (status: 404)`, GitHub Pages ещё не включён или выбран неверный источник. Нужен именно **GitHub Actions**, не ветка `gh-pages`. Для репозитория организации администратор организации также должен разрешить GitHub Pages в настройках org.
+
+Предупреждение Node.js про `punycode` в логах Actions можно игнорировать — на деплой оно не влияет.
 
 ## Передача команде для развёртывания
 
