@@ -60,12 +60,14 @@ CI проверяет наличие обязательных файлов, ва
 
 Deploy собирает каталог `dist/` и публикует его на GitHub Pages. Дополнительные секреты для деплоя не нужны.
 
+При сборке скрипт `prepare-pages.sh` автоматически добавляет префикс `/self-check-pro-site` к путям статики и ссылкам — иначе на адресе `https://mailigors.github.io/self-check-pro-site/` CSS и картинки отдают 404. Для своего домена в корне (`selfcheck.pro`) задайте `BASE_PATH=/` при сборке.
+
 ### Первый запуск
 
 1. В репозитории открыть [Settings → Pages](https://github.com/mailigors/self-check-pro-site/settings/pages).
 2. В **Build and deployment → Source** выбрать **GitHub Actions** (не «Deploy from a branch»).
 3. Сохранить настройки и заново запустить workflow **Deploy** (Actions → Deploy → Run workflow) или запушить коммит в `main`.
-4. После успешного деплоя сайт будет доступен по адресу вида `https://<org>.github.io/<repo>/` или по своему домену.
+4. После успешного деплоя сайт будет доступен по адресу **https://mailigors.github.io/self-check-pro-site/** или по своему домену.
 5. Для домена `selfcheck.pro` указать его в **Settings → Pages → Custom domain** и настроить DNS у регистратора.
 
 Если деплой падает с `Failed to create deployment (status: 404)`, GitHub Pages ещё не включён или выбран неверный источник. Нужен именно **GitHub Actions**, не ветка `gh-pages`. Для репозитория организации администратор организации также должен разрешить GitHub Pages в настройках org.
