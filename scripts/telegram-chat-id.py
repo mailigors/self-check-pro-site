@@ -60,7 +60,7 @@ def main():
         return
     for chat_id, title in groups.items():
         print('\nГруппа:', title)
-        print('TELEGRAM_CHAT_ID=' + str(chat_id))
+        print('TELEGRAM_CHAT_ID', chat_id, sep='=')
     print('\nВыберите ID именно группы SelfCheck_leads. Ключ не сохранён.')
 
 

@@ -13,6 +13,11 @@
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (sending) return;
+    const endpoint = (form.dataset.endpoint || '').trim();
+    if (!endpoint) {
+      status.textContent = 'Отправка заявок пока не подключена. Напишите на hello@selfcheck.pro.';
+      return;
+    }
     field('name').setCustomValidity(field('name').value.trim() ? '' : 'Укажите имя.');
     const phone = field('phone').value.trim();
     const digits = phone.replace(/\D/g, '');
@@ -25,7 +30,7 @@
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000);
     try {
-      const response = await fetch(form.dataset.endpoint || '/api/lead', {
+      const response = await fetch(endpoint, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: controller.signal,
         body: JSON.stringify({ name: field('name').value.trim(), phone, company: field('company').value.trim(),
           website: field('website').value, page: location.origin + location.pathname, source: form.dataset.source }),
