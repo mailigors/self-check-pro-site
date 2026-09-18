@@ -326,7 +326,7 @@
         <p>30 минут созвона: вы рассказываете, что и как проверяете, мы собираем это в конструкторе прямо при вас и показываем, как выглядит у сотрудника в телефоне. Чек-лист остаётся у вас, даже если вы не станете клиентом</p>
         <p style="margin-top:20px;font-size:14px">Или напишите: <b style="color:#fff">hello@selfcheck.pro</b> · Telegram</p>
       </div>
-      <form class="form" id="leadForm" novalidate>
+      <form class="form" id="leadForm" data-source="horeca" data-endpoint="/api/lead" novalidate>
         <input type="text" name="name" placeholder="Имя" required autocomplete="name">
         <input type="tel" name="phone" placeholder="Телефон" required autocomplete="tel">
         <input type="text" name="company" placeholder="Компания" autocomplete="organization">
@@ -356,26 +356,7 @@
   </div>
 </footer>
 
-<script>
-document.getElementById('leadForm').addEventListener('submit', async function(e){
-  e.preventDefault();
-  var form=this, btn=form.querySelector('button');
-  if(!form.name.value.trim()||!form.phone.value.trim()){ form.reportValidity(); return; }
-  btn.disabled=true; btn.textContent='Отправляем…';
-  try{
-    var r=await fetch('/api/lead',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:form.name.value,phone:form.phone.value,company:form.company.value,website:form.website.value,page:location.href,source:'horeca'})
-    });
-    if(!r.ok) throw new Error(r.status);
-    form.innerHTML='<div style="padding:28px 0;text-align:center"><b>Заявка отправлена</b>'+
-      '<div style="color:#95A0A9;font-size:14px;margin-top:6px">Свяжемся в течение рабочего дня</div></div>';
-  }catch(err){
-    btn.disabled=false; btn.textContent='Собрать чек-лист вместе';
-    alert('Не удалось отправить заявку. Напишите нам на hello@selfcheck.pro');
-  }
-});
-</script>
+<script src="/assets/lead-form.js" defer></script>
 
 </body>
 </html>
