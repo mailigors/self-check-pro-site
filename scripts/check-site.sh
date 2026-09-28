@@ -67,6 +67,23 @@ for page in horeca uk posutochno klining policy consent; do
   fi
 done
 
+if rg -q 'data-endpoint="/api/lead"' dist/index.html; then
+  fail "форма не должна включаться в публичном превью без серверного API"
+fi
+
+echo "==> Сборка для Selectel VDS"
+if ! BASE_PATH=/ LEAD_ENDPOINT=/api/lead bash scripts/prepare-pages.sh; then
+  fail "сборка для Selectel VDS завершилась с ошибкой"
+fi
+
+for page in index horeca uk posutochno klining; do
+  html_file="dist/index.html"
+  [[ "$page" != "index" ]] && html_file="dist/$page/index.html"
+  if ! rg -q 'data-endpoint="/api/lead"' "$html_file"; then
+    fail "в VDS-сборке не включена форма: $html_file"
+  fi
+done
+
 if [[ "$(find assets/friends -type f -name '*.png' | wc -l | tr -d ' ')" != "24" ]]; then
   fail "в блоке «Наши друзья» должно быть 24 PNG-логотипа"
 fi

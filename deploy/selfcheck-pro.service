@@ -1,0 +1,21 @@
+[Unit]
+Description=SelfCheck Pro lead API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=selfcheck-deploy
+Group=selfcheck-deploy
+WorkingDirectory=/var/www/selfcheck-deployments/current
+EnvironmentFile=/etc/selfcheck-pro.env
+ExecStart=/usr/local/bin/node server.mjs
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

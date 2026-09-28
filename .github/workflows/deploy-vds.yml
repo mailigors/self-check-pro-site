@@ -1,0 +1,47 @@
+name: Deploy VDS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vds-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Callista production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Проверка сайта и API
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-utils ripgrep
+          bash scripts/check-site.sh
+          npm test
+
+      - name: Подготовка архива
+        run: tar --exclude=.git --exclude=dist -czf /tmp/selfcheck-pro-deploy.tgz .
+
+      - name: Настройка SSH
+        env:
+          VDS_SSH_KEY: ${{ secrets.VDS_SSH_KEY }}
+          VDS_KNOWN_HOSTS: ${{ secrets.VDS_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$VDS_SSH_KEY" > ~/.ssh/selfcheck-deploy
+          printf '%s\n' "$VDS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/selfcheck-deploy ~/.ssh/known_hosts
+
+      - name: Публикация на Callista
+        env:
+          VDS_HOST: ${{ secrets.VDS_HOST }}
+        run: |
+          scp -i ~/.ssh/selfcheck-deploy /tmp/selfcheck-pro-deploy.tgz "selfcheck-deploy@$VDS_HOST:/tmp/selfcheck-pro-deploy.tgz"
+          ssh -i ~/.ssh/selfcheck-deploy "selfcheck-deploy@$VDS_HOST" /home/selfcheck-deploy/bin/deploy-selfcheck

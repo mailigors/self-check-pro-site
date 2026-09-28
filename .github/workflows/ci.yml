@@ -24,3 +24,6 @@ jobs:
 
       - name: Запуск проверок
         run: bash scripts/check-site.sh
+
+      - name: Проверка Telegram API
+        run: npm test

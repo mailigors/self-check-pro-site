@@ -1,0 +1,13 @@
+{
+  "name": "selfcheck-pro-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "BASE_PATH=/ LEAD_ENDPOINT=/api/lead bash scripts/prepare-pages.sh",
+    "start": "node server.mjs",
+    "test": "node --test tests/lead.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

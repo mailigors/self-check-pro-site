@@ -40,17 +40,18 @@ import re
 from pathlib import Path
 
 base = os.environ["BASE_PATH"].rstrip("/")
+lead_endpoint = os.environ.get("LEAD_ENDPOINT", "")
 dist = Path(os.environ["DIST"])
-
-if not base or base == "/":
-    raise SystemExit(0)
 
 pattern = re.compile(r'(?P<prefix>(?:href|src)=")/(?!/)')
 
 for html in dist.rglob("*.html"):
     text = html.read_text(encoding="utf-8")
-    text = pattern.sub(rf'\g<prefix>{base}/', text)
+    if base and base != "/":
+        text = pattern.sub(rf'\g<prefix>{base}/', text)
+    if lead_endpoint:
+        text = text.replace('data-endpoint=""', f'data-endpoint="{lead_endpoint}"')
     html.write_text(text, encoding="utf-8")
 PY
 
-echo "Сборка для GitHub Pages готова: $DIST (BASE_PATH=${BASE_PATH})"
+echo "Сборка сайта готова: $DIST (BASE_PATH=${BASE_PATH}, LEAD_ENDPOINT=${LEAD_ENDPOINT:-disabled})"
