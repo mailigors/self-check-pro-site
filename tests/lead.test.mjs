@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 const code = await readFile(new URL('../functions/api/lead.js', import.meta.url), 'utf8');
 const { handleLead } = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
 const env = { TELEGRAM_BOT_TOKEN: 'test-token', TELEGRAM_CHAT_ID: '-12345' };
-const lead = { name: 'Тест <имя>', phone: '+7 (999) 123-45-67', company: 'A & B', source: 'horeca', page: 'https://selfcheck.pro/horeca?private=1#secret' };
+const lead = { name: 'Тест <имя>', phone: '+7 (999) 123-45-67', email: 'test@example.com', company: 'A & B', comment: 'Нужно <быстро> & аккуратно', source: 'horeca', page: 'https://selfcheck.pro/horeca?private=1#secret' };
 const request = (body, headers = { 'Content-Type': 'application/json' }) => new Request('https://selfcheck.pro/api/lead', { method: 'POST', headers, body: JSON.stringify(body) });
 const noCall = () => { throw new Error('Unexpected outgoing request'); };
 test('confirmed delivery, escaping, source and URL privacy', async () => {
@@ -16,6 +16,7 @@ test('confirmed delivery, escaping, source and URL privacy', async () => {
  });
  assert.equal(response.status, 200); assert.deepEqual(await response.json(), { ok: true });
  assert.equal(sent.chat_id, '-12345'); assert.match(sent.text, /&lt;имя&gt;/); assert.match(sent.text, /A &amp; B/);
+ assert.match(sent.text, /test@example\.com/); assert.match(sent.text, /&lt;быстро&gt; &amp; аккуратно/);
  assert.match(sent.text, /Кафе и рестораны/); assert.ok(!sent.text.includes('private')); assert.ok(!sent.text.includes('secret'));
 });
 test('relay delivery uses HTTPS endpoint and bearer secret without Telegram credentials', async () => {
@@ -36,7 +37,7 @@ test('relay configuration rejects insecure URL', async () => {
  assert.equal(response.status, 503);
 });
 test('reject malformed values and invalid contacts before Telegram', async () => {
- for (const value of [null, [], true, { ...lead, name: {} }, { ...lead, phone: 'abc' }, { ...lead, name: ' ' }, { ...lead, company: 'x'.repeat(101) }, { ...lead, source: '__proto__' }, { ...lead, page: 'javascript:alert(1)' }]) {
+ for (const value of [null, [], true, { ...lead, name: {} }, { ...lead, phone: 'abc' }, { ...lead, email: '' }, { ...lead, email: 'wrong' }, { ...lead, email: `${'x'.repeat(24)}@mail.ru` }, { ...lead, comment: 'x'.repeat(141) }, { ...lead, name: ' ' }, { ...lead, company: 'x'.repeat(101) }, { ...lead, source: '__proto__' }, { ...lead, page: 'javascript:alert(1)' }]) {
   assert.equal((await handleLead(request(value), env, noCall)).status, 400);
  }
 });

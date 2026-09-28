@@ -282,9 +282,10 @@ details p{margin-top:12px;font-size:15px;max-width:75ch}
 .cta-box h2{color:#fff}
 .cta-box p{color:#B7BFC5;margin-top:14px}
 .form{background:#fff;border-radius:var(--radius-m);padding:26px;display:grid;gap:12px}
-.form input{width:100%;padding:14px;border:1px solid var(--border-soft);border-radius:10px;font-size:15px;font-family:inherit;color:var(--content-primary);background:var(--bg-secondary)}
-.form input::placeholder{color:var(--content-tertiary)}
-.form input:focus{outline:none;border-color:var(--brand-primary);background:#fff}
+.form input,.form textarea{width:100%;padding:14px;border:1px solid var(--border-soft);border-radius:10px;font-size:15px;font-family:inherit;color:var(--content-primary);background:var(--bg-secondary)}
+.form textarea{resize:vertical;min-height:88px;line-height:1.45}
+.form input::placeholder,.form textarea::placeholder{color:var(--content-tertiary)}
+.form input:focus,.form textarea:focus{outline:none;border-color:var(--brand-primary);background:#fff}
 .form .btn{width:100%}
 .form small{font-size:12px;color:var(--content-tertiary);line-height:1.45}
 

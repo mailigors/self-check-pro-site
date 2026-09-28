@@ -32,7 +32,7 @@ export async function handleLead(request, env = {}, fetchTelegram = fetch) {
   } catch { return reply({ error: 'bad json' }, 400); }
   if (!body || typeof body !== 'object' || Array.isArray(body)) return reply({ error: 'invalid fields' }, 400);
   if (typeof body.website === 'string' && body.website.trim()) return reply({ ok: true });
-  const limits = { name: 100, phone: 50, company: 100, page: 500, source: 40, website: 200 };
+  const limits = { name: 100, phone: 50, email: 30, company: 100, comment: 140, page: 500, source: 40, website: 200 };
   for (const [field, max] of Object.entries(limits)) {
     if (body[field] !== undefined && (typeof body[field] !== 'string' || body[field].length > max)) {
       return reply({ error: 'invalid fields' }, 400);
@@ -40,10 +40,13 @@ export async function handleLead(request, env = {}, fetchTelegram = fetch) {
   }
   const name = (body.name || '').trim();
   const phone = (body.phone || '').trim();
-  if (!name || !/^[+\d\s().-]+$/.test(phone) || phone.replace(/\D/g, '').length < 7 || phone.replace(/\D/g, '').length > 15) {
+  const email = (body.email || '').trim();
+  if (!name || !/^[+\d\s().-]+$/.test(phone) || phone.replace(/\D/g, '').length < 7 || phone.replace(/\D/g, '').length > 15 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     return reply({ error: 'invalid contact' }, 400);
   }
   const company = (body.company || '').trim();
+  const comment = (body.comment || '').trim();
   const source = body.source || 'index';
   if (!Object.hasOwn(SOURCES, source)) return reply({ error: 'invalid source' }, 400);
   let page = '';
@@ -56,8 +59,9 @@ export async function handleLead(request, env = {}, fetchTelegram = fetch) {
     } catch { return reply({ error: 'invalid page' }, 400); }
   }
   const text = '<b>Новая заявка — SelfCheck Pro</b>\n' +
-    `Имя: ${escapeHtml(name)}\nТелефон: ${escapeHtml(phone)}\n` +
+    `Имя: ${escapeHtml(name)}\nТелефон: ${escapeHtml(phone)}\nEmail: ${escapeHtml(email)}\n` +
     (company ? `Компания: ${escapeHtml(company)}\n` : '') +
+    (comment ? `Комментарий: ${escapeHtml(comment)}\n` : '') +
     `Раздел: ${SOURCES[source]}` + (page ? `\nСтраница: ${escapeHtml(page)}` : '');
   const relayUrl = String(env.TELEGRAM_RELAY_URL || '').trim();
   const relaySecret = String(env.TELEGRAM_RELAY_SECRET || '');

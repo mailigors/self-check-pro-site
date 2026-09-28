@@ -82,7 +82,20 @@ for page in index horeca uk posutochno klining; do
   if ! rg -q 'data-endpoint="/api/lead"' "$html_file"; then
     fail "в VDS-сборке не включена форма: $html_file"
   fi
+  for field in email comment; do
+    if ! rg -q "name=\"$field\"" "$html_file"; then
+      fail "в форме отсутствует поле $field: $html_file"
+    fi
+  done
 done
+
+if ! rg -q '/assets/lead-form\.[0-9a-f]{12}\.js' dist/index.html; then
+  fail "JavaScript формы должен иметь версию по содержимому для сброса кэша"
+fi
+
+if ! rg -q '/assets/styles\.[0-9a-f]{12}\.css' dist/index.html; then
+  fail "CSS должен иметь версию по содержимому для сброса кэша"
+fi
 
 if [[ "$(find assets/friends -type f -name '*.png' | wc -l | tr -d ' ')" != "24" ]]; then
   fail "в блоке «Наши друзья» должно быть 24 PNG-логотипа"

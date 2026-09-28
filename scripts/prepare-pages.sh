@@ -37,6 +37,7 @@ done
 BASE_PATH="$BASE_PATH" DIST="$DIST" python3 - <<'PY'
 import os
 import re
+import hashlib
 from pathlib import Path
 
 base = os.environ["BASE_PATH"].rstrip("/")
@@ -45,8 +46,18 @@ dist = Path(os.environ["DIST"])
 
 pattern = re.compile(r'(?P<prefix>(?:href|src)=")/(?!/)')
 
+asset_replacements = {}
+for logical in ("assets/styles.css", "assets/lead-form.js"):
+    source = dist / logical
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()[:12]
+    versioned = source.with_name(f"{source.stem}.{digest}{source.suffix}")
+    source.rename(versioned)
+    asset_replacements[f"/{logical}"] = f"/{versioned.relative_to(dist).as_posix()}"
+
 for html in dist.rglob("*.html"):
     text = html.read_text(encoding="utf-8")
+    for original, versioned in asset_replacements.items():
+        text = text.replace(original, versioned)
     if base and base != "/":
         text = pattern.sub(rf'\g<prefix>{base}/', text)
     if lead_endpoint:

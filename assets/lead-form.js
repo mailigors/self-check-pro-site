@@ -7,7 +7,10 @@
   phoneField.maxLength = 18;
   phoneField.inputMode = 'tel';
   phoneField.placeholder = '+7 (XXX) XXX-XX-XX';
+  const emailField = field('email');
+  emailField.maxLength = 30;
   field('company').maxLength = 100;
+  field('comment').maxLength = 140;
   const formatRussianPhone = (value) => {
     let digits = value.replace(/\D/g, '');
     if (!digits) return '';
@@ -36,6 +39,10 @@
   phoneField.addEventListener('blur', () => {
     if (phoneField.value.replace(/\D/g, '').length <= 1) phoneField.value = '';
   });
+  emailField.addEventListener('input', () => {
+    emailField.value = emailField.value.replace(/\s/g, '').slice(0, 30);
+    emailField.setCustomValidity('');
+  });
   const status = document.createElement('p');
   status.setAttribute('role', 'status');
   status.setAttribute('aria-live', 'polite');
@@ -53,6 +60,8 @@
     const phone = phoneField.value.trim();
     const digits = phone.replace(/\D/g, '');
     phoneField.setCustomValidity(digits.length === 11 && digits.startsWith('7') ? '' : 'Введите номер полностью: +7 (XXX) XXX-XX-XX.');
+    const email = emailField.value.trim();
+    emailField.setCustomValidity(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? '' : 'Введите email в формате name@example.com.');
     if (!form.reportValidity()) return;
     const button = form.querySelector('button');
     const label = button.textContent;
@@ -63,7 +72,8 @@
     try {
       const response = await fetch(endpoint, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: controller.signal,
-        body: JSON.stringify({ name: field('name').value.trim(), phone, company: field('company').value.trim(),
+        body: JSON.stringify({ name: field('name').value.trim(), phone, email, company: field('company').value.trim(),
+          comment: field('comment').value.trim(),
           website: field('website').value, page: location.origin + location.pathname, source: form.dataset.source }),
       });
       const data = await response.json();
