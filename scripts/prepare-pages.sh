@@ -25,6 +25,7 @@ touch "$DIST/.nojekyll"
 cp "$ROOT/index.html" "$DIST/index.html"
 cp "$ROOT/assets/styles.css" "$DIST/assets/styles.css"
 cp "$ROOT/assets/lead-form.js" "$DIST/assets/lead-form.js"
+cp -R "$ROOT/assets/friends" "$DIST/assets/friends"
 cp "$ROOT/logo.png" "$ROOT/og.png" "$ROOT/favicon-32.png" "$ROOT/apple-touch-icon.png" "$DIST/"
 cp "$ROOT/robots.txt" "$ROOT/sitemap.xml" "$DIST/"
 

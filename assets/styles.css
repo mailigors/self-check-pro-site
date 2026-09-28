@@ -138,6 +138,30 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdro
 .fc-1 .fc-title i{background:var(--content-error)}
 .fc-sub{font-size:11.5px;color:var(--content-secondary);margin-top:4px;line-height:1.4}
 
+/* friends */
+.friends{
+  position:relative;z-index:1;padding:56px 0 52px;overflow:hidden;
+  border-top:1px solid var(--border-soft);background:var(--bg-primary);
+}
+.friends h2{text-align:center;font-size:clamp(24px,2.7vw,34px)}
+.friends-marquee{
+  margin-top:30px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+}
+.friends-track{display:flex;width:max-content;animation:friends-scroll 64s linear infinite}
+.friends-marquee:hover .friends-track{animation-play-state:paused}
+.friends-set{display:flex;align-items:center;gap:32px;padding-right:32px}
+.friend-logo{
+  width:174px;height:86px;display:grid;place-items:center;flex:none;
+  padding:8px 12px;border-radius:var(--radius-s);
+}
+.friend-logo img{
+  display:block;max-width:100%;max-height:70px;width:auto;height:auto;
+  filter:grayscale(1) contrast(.92);opacity:.62;mix-blend-mode:multiply;
+}
+@keyframes friends-scroll{to{transform:translateX(-50%)}}
+
 /* niches */
 .logos{padding:56px 0;border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft);background:var(--bg-secondary)}
 /* подзаголовки полос: обычный кегль вместо мелкого капса, иначе не читаются */
@@ -285,9 +309,19 @@ footer{border-top:1px solid var(--border-soft);padding:48px 0 40px;background:va
 @media(max-width:620px){
   .pain-grid,.steps,.f-grid,.price-grid,.f-top,.types,.niches,.who{grid-template-columns:1fr}
   .hero{padding:40px 0 56px}
+  .friends{padding:44px 0 40px}
+  .friends-marquee{margin-top:24px}
+  .friends-set{gap:18px;padding-right:18px}
+  .friend-logo{width:142px;height:74px;padding:6px 10px}
+  .friend-logo img{max-height:58px}
   .stage{--pscale:.54;height:520px}
   .hero-cta .btn{width:100%}
   .nav-cta .btn-ghost{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .friends-marquee{overflow-x:auto;mask-image:none;-webkit-mask-image:none}
+  .friends-track{animation:none}
+  .friends-set[aria-hidden="true"]{display:none}
 }
 /* ---------- юридические страницы ---------- */
 .legal{padding:56px 0 72px}
@@ -303,9 +337,10 @@ footer{border-top:1px solid var(--border-soft);padding:48px 0 40px;background:va
 .req{background:var(--bg-secondary);border:1px solid var(--border-soft);border-radius:var(--radius-m);padding:22px 24px;margin-bottom:8px}
 .req h2{margin-top:0}
 .req .hint{color:var(--content-tertiary);font-size:13.5px;margin:0}
-/* подсветка незаполненных реквизитов: после заполнения убрать class="fill" */
-.fill{background:#FFF3CD;border-bottom:1px dashed #D9A62A;padding:0 3px;border-radius:3px}
 
 /* ---------- список готовых чек-листов на нишевых страницах ---------- */
 .ind{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .ind span{border:1px solid var(--border-soft);border-radius:100px;padding:10px 18px;font-size:14.5px;background:#fff}
+
+/* Реквизиты владельца сайта */
+.f-owner{display:flex;flex-direction:column;gap:5px;max-width:100%;overflow-wrap:anywhere;line-height:1.6}

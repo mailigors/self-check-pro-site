@@ -27,6 +27,8 @@ REQUIRED_FILES=(
   policy.html
   consent.html
   assets/styles.css
+  assets/friends/ginza-project.png
+  assets/friends/krivets-ptitsa.png
   robots.txt
   sitemap.xml
   logo.png
@@ -64,6 +66,14 @@ for page in horeca uk posutochno klining policy consent; do
     fail "после сборки отсутствует dist/$page/index.html"
   fi
 done
+
+if [[ "$(find assets/friends -type f -name '*.png' | wc -l | tr -d ' ')" != "24" ]]; then
+  fail "в блоке «Наши друзья» должно быть 24 PNG-логотипа"
+fi
+
+if [[ "$(find dist/assets/friends -type f -name '*.png' | wc -l | tr -d ' ')" != "24" ]]; then
+  fail "в сборку GitHub Pages попали не все логотипы"
+fi
 
 echo "==> Поиск случайно закоммиченных секретов"
 if rg -n --pcre2 '(?i)(bot[0-9]{8,}:[A-Za-z0-9_-]{20,}|TELEGRAM_(BOT_TOKEN|CHAT_ID)\s*=\s*[^[:space:]#]+|api[_-]?key\s*=\s*[^[:space:]#]+)' \
