@@ -13,6 +13,8 @@ Username не участвует в отправке: Telegram определя�
 | `TELEGRAM_BOT_TOKEN` | Ключ созданного бота, хранится у владельца |
 | `TELEGRAM_CHAT_ID` | Числовой ID группы, включая начальный минус |
 
+На Selectel исходящие соединения с `api.telegram.org` недоступны, поэтому рабочая схема использует защищённый Cloudflare Worker `selfcheck-telegram-relay`. На VDS задаются `TELEGRAM_RELAY_URL` и `TELEGRAM_RELAY_SECRET`; токен бота и ID группы хранятся в Variables and Secrets самого Worker. Обработчик сохраняет прямой режим с `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_ID` для окружений, где Telegram API доступен.
+
 Файл `.env.example` ничего автоматически не подключает. На Selectel VDS значения хранятся в `/etc/selfcheck-pro.env` с правами `600`, как описано в `docs/selectel-vds.md`.
 
 Для интерактивного определения ID запустить `python3 scripts/telegram-chat-id.py`: ключ вводится скрыто, скрипт показывает точное имя бота и команду для группы, затем выводит ID. Ключ не сохраняется.

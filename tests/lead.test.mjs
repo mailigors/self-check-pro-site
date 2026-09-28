@@ -18,6 +18,23 @@ test('confirmed delivery, escaping, source and URL privacy', async () => {
  assert.equal(sent.chat_id, '-12345'); assert.match(sent.text, /&lt;имя&gt;/); assert.match(sent.text, /A &amp; B/);
  assert.match(sent.text, /Кафе и рестораны/); assert.ok(!sent.text.includes('private')); assert.ok(!sent.text.includes('secret'));
 });
+test('relay delivery uses HTTPS endpoint and bearer secret without Telegram credentials', async () => {
+ let sent;
+ const relayEnv = { TELEGRAM_RELAY_URL: 'https://relay.example/send', TELEGRAM_RELAY_SECRET: 'relay-secret' };
+ const response = await handleLead(request(lead), relayEnv, async (url, options) => {
+   assert.equal(url, 'https://relay.example/send');
+   assert.equal(options.headers.Authorization, 'Bearer relay-secret');
+   sent = JSON.parse(options.body);
+   return Response.json({ ok: true });
+ });
+ assert.equal(response.status, 200);
+ assert.deepEqual(Object.keys(sent), ['text']);
+ assert.match(sent.text, /Новая заявка/);
+});
+test('relay configuration rejects insecure URL', async () => {
+ const response = await handleLead(request(lead), { TELEGRAM_RELAY_URL: 'http://relay.example/send', TELEGRAM_RELAY_SECRET: 'secret' }, noCall);
+ assert.equal(response.status, 503);
+});
 test('reject malformed values and invalid contacts before Telegram', async () => {
  for (const value of [null, [], true, { ...lead, name: {} }, { ...lead, phone: 'abc' }, { ...lead, name: ' ' }, { ...lead, company: 'x'.repeat(101) }, { ...lead, source: '__proto__' }, { ...lead, page: 'javascript:alert(1)' }]) {
   assert.equal((await handleLead(request(value), env, noCall)).status, 400);

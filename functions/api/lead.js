@@ -55,20 +55,37 @@ export async function handleLead(request, env = {}, fetchTelegram = fetch) {
       page = url.origin + url.pathname;
     } catch { return reply({ error: 'invalid page' }, 400); }
   }
-  if (!env.TELEGRAM_BOT_TOKEN || !/^-\d+$/.test(String(env.TELEGRAM_CHAT_ID || ''))) {
-    return reply({ error: 'not configured' }, 503);
-  }
   const text = '<b>Новая заявка — SelfCheck Pro</b>\n' +
     `Имя: ${escapeHtml(name)}\nТелефон: ${escapeHtml(phone)}\n` +
     (company ? `Компания: ${escapeHtml(company)}\n` : '') +
     `Раздел: ${SOURCES[source]}` + (page ? `\nСтраница: ${escapeHtml(page)}` : '');
+  const relayUrl = String(env.TELEGRAM_RELAY_URL || '').trim();
+  const relaySecret = String(env.TELEGRAM_RELAY_SECRET || '');
+  const useRelay = Boolean(relayUrl && relaySecret);
+  let target; let headers; let outgoingBody;
+  if (useRelay) {
+    try {
+      const parsed = new URL(relayUrl);
+      if (parsed.protocol !== 'https:' || parsed.username || parsed.password) throw new Error();
+      target = parsed.toString();
+    } catch { return reply({ error: 'not configured' }, 503); }
+    headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${relaySecret}` };
+    outgoingBody = { text };
+  } else {
+    if (!env.TELEGRAM_BOT_TOKEN || !/^-\d+$/.test(String(env.TELEGRAM_CHAT_ID || ''))) {
+      return reply({ error: 'not configured' }, 503);
+    }
+    target = `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`;
+    headers = { 'Content-Type': 'application/json' };
+    outgoingBody = { chat_id: String(env.TELEGRAM_CHAT_ID), text, parse_mode: 'HTML', link_preview_options: { is_disabled: true } };
+  }
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
   try {
-    const response = await fetchTelegram(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    const response = await fetchTelegram(target, {
       method: 'POST', signal: controller.signal,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: String(env.TELEGRAM_CHAT_ID), text, parse_mode: 'HTML', link_preview_options: { is_disabled: true } }),
+      headers,
+      body: JSON.stringify(outgoingBody),
     });
     const result = await response.json();
     if (!response.ok || result?.ok !== true) return reply({ error: 'telegram unavailable' }, 502);
