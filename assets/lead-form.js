@@ -3,8 +3,39 @@
   if (!form) return;
   const field = (name) => form.elements.namedItem(name);
   field('name').maxLength = 100;
-  field('phone').maxLength = 50;
+  const phoneField = field('phone');
+  phoneField.maxLength = 18;
+  phoneField.inputMode = 'tel';
+  phoneField.placeholder = '+7 (XXX) XXX-XX-XX';
   field('company').maxLength = 100;
+  const formatRussianPhone = (value) => {
+    let digits = value.replace(/\D/g, '');
+    if (!digits) return '';
+    if (digits[0] === '8') digits = `7${digits.slice(1)}`;
+    else if (digits[0] !== '7') digits = `7${digits}`;
+    const local = digits.slice(1, 11);
+    let formatted = '+7';
+    if (local.length) formatted += ` (${local.slice(0, 3)}`;
+    if (local.length >= 3) formatted += ')';
+    if (local.length > 3) formatted += ` ${local.slice(3, 6)}`;
+    if (local.length > 6) formatted += `-${local.slice(6, 8)}`;
+    if (local.length > 8) formatted += `-${local.slice(8, 10)}`;
+    return formatted;
+  };
+  phoneField.addEventListener('input', () => {
+    phoneField.value = formatRussianPhone(phoneField.value);
+    phoneField.setCustomValidity('');
+  });
+  phoneField.addEventListener('keydown', (event) => {
+    if (event.key !== 'Backspace' || phoneField.selectionStart !== phoneField.selectionEnd ||
+        phoneField.selectionStart !== phoneField.value.length || /\d$/.test(phoneField.value)) return;
+    event.preventDefault();
+    const digits = phoneField.value.replace(/\D/g, '').slice(0, -1);
+    phoneField.value = formatRussianPhone(digits);
+  });
+  phoneField.addEventListener('blur', () => {
+    if (phoneField.value.replace(/\D/g, '').length <= 1) phoneField.value = '';
+  });
   const status = document.createElement('p');
   status.setAttribute('role', 'status');
   status.setAttribute('aria-live', 'polite');
@@ -19,9 +50,9 @@
       return;
     }
     field('name').setCustomValidity(field('name').value.trim() ? '' : 'Укажите имя.');
-    const phone = field('phone').value.trim();
+    const phone = phoneField.value.trim();
     const digits = phone.replace(/\D/g, '');
-    field('phone').setCustomValidity(/^[+\d\s().-]+$/.test(phone) && digits.length >= 7 && digits.length <= 15 ? '' : 'Проверьте номер телефона.');
+    phoneField.setCustomValidity(digits.length === 11 && digits.startsWith('7') ? '' : 'Введите номер полностью: +7 (XXX) XXX-XX-XX.');
     if (!form.reportValidity()) return;
     const button = form.querySelector('button');
     const label = button.textContent;
@@ -44,5 +75,5 @@
       button.disabled = false; button.textContent = label;
     } finally { sending = false; clearTimeout(timeout); }
   });
-  for (const name of ['name', 'phone']) field(name).addEventListener('input', () => field(name).setCustomValidity(''));
+  field('name').addEventListener('input', () => field('name').setCustomValidity(''));
 })();
