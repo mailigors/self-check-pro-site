@@ -34,6 +34,9 @@ REQUIRED_FILES=(
   policy.html
   consent.html
   assets/styles.css
+  assets/vendor/intl-tel-input/LICENSE
+  assets/vendor/intl-tel-input/css/intlTelInput.min.css
+  assets/vendor/intl-tel-input/js/intlTelInputWithUtils.min.js
   assets/friends/ginza-project.png
   assets/friends/krivets-ptitsa.png
   robots.txt
@@ -120,6 +123,12 @@ for page in index horeca uk posutochno klining; do
   [[ "$page" != "index" ]] && html_file="dist/en/$page/index.html"
   if ! rg -q 'data-endpoint="/api/lead"' "$html_file"; then
     fail "в английской VDS-сборке не включена форма: $html_file"
+  fi
+  if ! rg -q '/assets/vendor/intl-tel-input/js/intlTelInputWithUtils\.min\.js' "$html_file"; then
+    fail "в английской форме не подключён международный телефонный ввод: $html_file"
+  fi
+  if rg -q 'placeholder="\+7' "$html_file"; then
+    fail "в английской форме осталась российская маска телефона: $html_file"
   fi
 done
 

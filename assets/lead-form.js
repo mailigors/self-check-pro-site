@@ -5,7 +5,7 @@
   const copy = isEnglish ? {
     unavailable: 'Requests are not connected yet. Email hello@selfcheck.pro.',
     name: 'Enter your name.',
-    phone: 'Enter the full number: +7 (XXX) XXX-XX-XX.',
+    phone: 'Enter a valid international phone number.',
     email: 'Enter an email in the format name@example.com.',
     sending: 'Sending…',
     success: 'Request sent. We will contact you within one business day.',
@@ -22,9 +22,9 @@
   const field = (name) => form.elements.namedItem(name);
   field('name').maxLength = 100;
   const phoneField = field('phone');
-  phoneField.maxLength = 18;
+  phoneField.maxLength = isEnglish ? 30 : 18;
   phoneField.inputMode = 'tel';
-  phoneField.placeholder = '+7 (XXX) XXX-XX-XX';
+  phoneField.placeholder = isEnglish ? 'Phone number' : '+7 (XXX) XXX-XX-XX';
   const emailField = field('email');
   emailField.maxLength = 30;
   field('company').maxLength = 100;
@@ -43,11 +43,24 @@
     if (local.length > 8) formatted += `-${local.slice(8, 10)}`;
     return formatted;
   };
+  const internationalPhone = isEnglish && window.intlTelInput ? window.intlTelInput(phoneField, {
+    initialCountry: '',
+    showFlags: true,
+    separateDialCode: true,
+    strictMode: false,
+    formatAsYouType: true,
+    placeholderNumberPolicy: 'AGGRESSIVE',
+    customPlaceholder: (exampleNumber) => exampleNumber || 'Phone number',
+  }) : null;
   phoneField.addEventListener('input', () => {
-    phoneField.value = formatRussianPhone(phoneField.value);
+    if (!internationalPhone) phoneField.value = formatRussianPhone(phoneField.value);
     phoneField.setCustomValidity('');
   });
+  phoneField.addEventListener('beforeinput', (event) => {
+    if (internationalPhone && event.data && /[^\d+()\s.-]/.test(event.data)) event.preventDefault();
+  });
   phoneField.addEventListener('keydown', (event) => {
+    if (internationalPhone) return;
     if (event.key !== 'Backspace' || phoneField.selectionStart !== phoneField.selectionEnd ||
         phoneField.selectionStart !== phoneField.value.length || /\d$/.test(phoneField.value)) return;
     event.preventDefault();
@@ -55,7 +68,7 @@
     phoneField.value = formatRussianPhone(digits);
   });
   phoneField.addEventListener('blur', () => {
-    if (phoneField.value.replace(/\D/g, '').length <= 1) phoneField.value = '';
+    if (!internationalPhone && phoneField.value.replace(/\D/g, '').length <= 1) phoneField.value = '';
   });
   emailField.addEventListener('input', () => {
     emailField.value = emailField.value.replace(/\s/g, '').slice(0, 30);
@@ -75,9 +88,11 @@
       return;
     }
     field('name').setCustomValidity(field('name').value.trim() ? '' : copy.name);
-    const phone = phoneField.value.trim();
+    const phone = internationalPhone ? internationalPhone.getNumber() : phoneField.value.trim();
     const digits = phone.replace(/\D/g, '');
-    phoneField.setCustomValidity(digits.length === 11 && digits.startsWith('7') ? '' : copy.phone);
+    phoneField.setCustomValidity(internationalPhone
+      ? (internationalPhone.isValidNumber() ? '' : copy.phone)
+      : (digits.length === 11 && digits.startsWith('7') ? '' : copy.phone));
     const email = emailField.value.trim();
     emailField.setCustomValidity(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? '' : copy.email);
     if (!form.reportValidity()) return;

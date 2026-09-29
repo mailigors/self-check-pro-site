@@ -23,6 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/styles.css">
+<link rel="stylesheet" href="/assets/vendor/intl-tel-input/css/intlTelInput.min.css">
 </head>
 <body>
 
@@ -332,7 +333,7 @@
       </div>
       <form class="form" id="leadForm" data-source="horeca" data-endpoint="" novalidate>
         <input type="text" name="name" placeholder="Name" required autocomplete="name">
-        <input type="tel" name="phone" placeholder="+7 (XXX) XXX-XX-XX" required autocomplete="tel" inputmode="tel">
+        <input type="tel" name="phone" placeholder="Phone number" required autocomplete="tel" inputmode="tel">
         <input type="email" name="email" placeholder="Email: name@example.com" required autocomplete="email" inputmode="email" maxlength="30">
         <input type="text" name="company" placeholder="Company" autocomplete="organization">
         <textarea name="comment" placeholder="Comment (optional)" maxlength="140" rows="3"></textarea>
@@ -362,6 +363,7 @@
   </div>
 </footer>
 
+<script src="/assets/vendor/intl-tel-input/js/intlTelInputWithUtils.min.js" defer></script>
 <script src="/assets/lead-form.js" defer></script>
 
 </body>
