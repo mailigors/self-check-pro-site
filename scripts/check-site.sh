@@ -24,6 +24,11 @@ REQUIRED_FILES=(
   uk.html
   posutochno.html
   klining.html
+  en/index.html
+  en/horeca.html
+  en/uk.html
+  en/posutochno.html
+  en/klining.html
   policy.html
   consent.html
   assets/styles.css
@@ -50,7 +55,12 @@ while IFS= read -r loc; do
   path="${loc#https://selfcheck.pro}"
   [[ -z "$path" || "$path" == "/" ]] && continue
 
-  html_file="${path#/}.html"
+  clean_path="${path%/}"
+  if [[ "$clean_path" == "/en" ]]; then
+    html_file="en/index.html"
+  else
+    html_file="${clean_path#/}.html"
+  fi
   if [[ ! -f "$html_file" ]]; then
     fail "в sitemap указан путь $path, но файл $html_file не найден"
   fi
@@ -64,6 +74,20 @@ fi
 for page in horeca uk posutochno klining policy consent; do
   if [[ ! -f "dist/$page/index.html" ]]; then
     fail "после сборки отсутствует dist/$page/index.html"
+  fi
+done
+
+for page in index horeca uk posutochno klining; do
+  html_file="dist/en/index.html"
+  [[ "$page" != "index" ]] && html_file="dist/en/$page/index.html"
+  if [[ ! -f "$html_file" ]]; then
+    fail "после сборки отсутствует английская страница: $html_file"
+  fi
+  if ! rg -q '<html lang="en">' "$html_file"; then
+    fail "английская страница не помечена lang=en: $html_file"
+  fi
+  if ! rg -q 'class="lang-switch"' "$html_file"; then
+    fail "на английской странице нет переключателя языка: $html_file"
   fi
 done
 
@@ -87,6 +111,14 @@ for page in index horeca uk posutochno klining; do
       fail "в форме отсутствует поле $field: $html_file"
     fi
   done
+done
+
+for page in index horeca uk posutochno klining; do
+  html_file="dist/en/index.html"
+  [[ "$page" != "index" ]] && html_file="dist/en/$page/index.html"
+  if ! rg -q 'data-endpoint="/api/lead"' "$html_file"; then
+    fail "в английской VDS-сборке не включена форма: $html_file"
+  fi
 done
 
 if ! rg -q '/assets/lead-form\.[0-9a-f]{12}\.js' dist/index.html; then

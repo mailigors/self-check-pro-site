@@ -1,6 +1,24 @@
 (() => {
   const form = document.getElementById('leadForm');
   if (!form) return;
+  const isEnglish = document.documentElement.lang === 'en';
+  const copy = isEnglish ? {
+    unavailable: 'Requests are not connected yet. Email hello@selfcheck.pro.',
+    name: 'Enter your name.',
+    phone: 'Enter the full number: +7 (XXX) XXX-XX-XX.',
+    email: 'Enter an email in the format name@example.com.',
+    sending: 'Sending…',
+    success: 'Request sent. We will contact you within one business day.',
+    error: 'We could not confirm delivery. Your data remains in the form. Try again later or email hello@selfcheck.pro.',
+  } : {
+    unavailable: 'Отправка заявок пока не подключена. Напишите на hello@selfcheck.pro.',
+    name: 'Укажите имя.',
+    phone: 'Введите номер полностью: +7 (XXX) XXX-XX-XX.',
+    email: 'Введите email в формате name@example.com.',
+    sending: 'Отправляем…',
+    success: 'Заявка отправлена. Свяжемся в течение рабочего дня.',
+    error: 'Не удалось подтвердить отправку. Данные сохранены в форме. Попробуйте позже или напишите на hello@selfcheck.pro.',
+  };
   const field = (name) => form.elements.namedItem(name);
   field('name').maxLength = 100;
   const phoneField = field('phone');
@@ -53,19 +71,19 @@
     if (sending) return;
     const endpoint = (form.dataset.endpoint || '').trim();
     if (!endpoint) {
-      status.textContent = 'Отправка заявок пока не подключена. Напишите на hello@selfcheck.pro.';
+      status.textContent = copy.unavailable;
       return;
     }
-    field('name').setCustomValidity(field('name').value.trim() ? '' : 'Укажите имя.');
+    field('name').setCustomValidity(field('name').value.trim() ? '' : copy.name);
     const phone = phoneField.value.trim();
     const digits = phone.replace(/\D/g, '');
-    phoneField.setCustomValidity(digits.length === 11 && digits.startsWith('7') ? '' : 'Введите номер полностью: +7 (XXX) XXX-XX-XX.');
+    phoneField.setCustomValidity(digits.length === 11 && digits.startsWith('7') ? '' : copy.phone);
     const email = emailField.value.trim();
-    emailField.setCustomValidity(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? '' : 'Введите email в формате name@example.com.');
+    emailField.setCustomValidity(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? '' : copy.email);
     if (!form.reportValidity()) return;
     const button = form.querySelector('button');
     const label = button.textContent;
-    sending = true; button.disabled = true; button.textContent = 'Отправляем…';
+    sending = true; button.disabled = true; button.textContent = copy.sending;
     status.textContent = '';
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000);
@@ -79,9 +97,9 @@
       const data = await response.json();
       if (!response.ok || data?.ok !== true) throw new Error('delivery failed');
       form.replaceChildren(status);
-      status.textContent = 'Заявка отправлена. Свяжемся в течение рабочего дня.';
+      status.textContent = copy.success;
     } catch {
-      status.textContent = 'Не удалось подтвердить отправку. Данные сохранены в форме. Попробуйте позже или напишите на hello@selfcheck.pro.';
+      status.textContent = copy.error;
       button.disabled = false; button.textContent = label;
     } finally { sending = false; clearTimeout(timeout); }
   });

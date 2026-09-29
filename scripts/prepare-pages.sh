@@ -23,6 +23,8 @@ mkdir -p "$DIST/assets"
 touch "$DIST/.nojekyll"
 
 cp "$ROOT/index.html" "$DIST/index.html"
+mkdir -p "$DIST/en"
+cp "$ROOT/en/index.html" "$DIST/en/index.html"
 cp "$ROOT/assets/styles.css" "$DIST/assets/styles.css"
 cp "$ROOT/assets/lead-form.js" "$DIST/assets/lead-form.js"
 cp -R "$ROOT/assets/friends" "$DIST/assets/friends"
@@ -32,6 +34,11 @@ cp "$ROOT/robots.txt" "$ROOT/sitemap.xml" "$DIST/"
 for page in horeca uk posutochno klining policy consent; do
   mkdir -p "$DIST/$page"
   cp "$ROOT/$page.html" "$DIST/$page/index.html"
+done
+
+for page in horeca uk posutochno klining; do
+  mkdir -p "$DIST/en/$page"
+  cp "$ROOT/en/$page.html" "$DIST/en/$page/index.html"
 done
 
 BASE_PATH="$BASE_PATH" DIST="$DIST" python3 - <<'PY'
