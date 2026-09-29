@@ -53,6 +53,7 @@ if len(urls) != len(set(urls)):
 
 titles = {}
 descriptions = {}
+h1s = {}
 for url in urls:
     path = source_for_url(url)
     if not path.is_file():
@@ -70,6 +71,9 @@ for url in urls:
 
     title = one(r'<title>(.*?)</title>', 'title')
     description = one(r'<meta name="description" content="(.*?)">', 'meta description')
+    h1 = one(r'<h1(?:\s[^>]*)?>(.*?)</h1>', 'H1')
+    h1 = re.sub(r'<[^>]+>', ' ', h1)
+    h1 = ' '.join(h1.split())
     canonical = one(r'<link rel="canonical" href="(.*?)">', 'canonical')
     og_url = one(r'<meta property="og:url" content="(.*?)">', 'og:url')
     if canonical != url:
@@ -83,6 +87,12 @@ for url in urls:
         if value in registry:
             fail(f'{rel}: {label} повторяет {registry[value]}')
         registry[value] = rel
+
+    if h1:
+        key = (url.startswith(SITE + '/en/'), h1.casefold())
+        if key in h1s:
+            fail(f'{rel}: H1 повторяет {h1s[key]}')
+        h1s[key] = rel
 
     alternate_pairs = re.findall(r'<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">', text)
     alternates = dict(alternate_pairs)
