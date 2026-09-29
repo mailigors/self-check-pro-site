@@ -34,6 +34,11 @@ REQUIRED_FILES=(
   policy.html
   consent.html
   assets/styles.css
+  assets/fonts/poppins/OFL.txt
+  assets/fonts/poppins/poppins-400-latin.woff2
+  assets/fonts/poppins/poppins-500-latin.woff2
+  assets/fonts/poppins/poppins-600-latin.woff2
+  assets/fonts/poppins/poppins-700-latin.woff2
   assets/vendor/intl-tel-input/LICENSE
   assets/vendor/intl-tel-input/css/intlTelInput.min.css
   assets/vendor/intl-tel-input/js/intlTelInputWithUtils.min.js
@@ -51,9 +56,17 @@ for file in "${REQUIRED_FILES[@]}"; do
   require_file "$file"
 done
 
+if rg -q 'fonts\.(googleapis|gstatic)\.com' --glob '*.html' .; then
+  fail "HTML не должен зависеть от Google Fonts: шрифты хранятся локально"
+fi
+
 echo "==> Проверка sitemap.xml"
 if ! xmllint --noout sitemap.xml; then
   fail "sitemap.xml не прошёл XML-валидацию"
+fi
+
+if ! python3 scripts/check-seo.py; then
+  fail "SEO-разметка не прошла проверку"
 fi
 
 while IFS= read -r loc; do
