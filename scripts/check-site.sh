@@ -60,6 +60,10 @@ if rg -q 'fonts\.(googleapis|gstatic)\.com' --glob '*.html' .; then
   fail "HTML не должен зависеть от Google Fonts: шрифты хранятся локально"
 fi
 
+if rg -qi 'telegram|телеграм|t\.me/' --glob '*.html' --glob '!dist/**' .; then
+  fail "на публичных страницах не должно быть клиентских упоминаний Telegram"
+fi
+
 echo "==> Проверка sitemap.xml"
 if ! xmllint --noout sitemap.xml; then
   fail "sitemap.xml не прошёл XML-валидацию"
