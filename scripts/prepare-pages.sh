@@ -36,7 +36,7 @@ for page in horeca uk posutochno klining policy consent; do
   cp "$ROOT/$page.html" "$DIST/$page/index.html"
 done
 
-for page in horeca uk posutochno klining; do
+for page in horeca uk posutochno klining policy consent; do
   mkdir -p "$DIST/en/$page"
   cp "$ROOT/en/$page.html" "$DIST/en/$page/index.html"
 done

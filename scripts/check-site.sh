@@ -29,6 +29,8 @@ REQUIRED_FILES=(
   en/uk.html
   en/posutochno.html
   en/klining.html
+  en/policy.html
+  en/consent.html
   policy.html
   consent.html
   assets/styles.css
@@ -77,7 +79,7 @@ for page in horeca uk posutochno klining policy consent; do
   fi
 done
 
-for page in index horeca uk posutochno klining; do
+for page in index horeca uk posutochno klining policy consent; do
   html_file="dist/en/index.html"
   [[ "$page" != "index" ]] && html_file="dist/en/$page/index.html"
   if [[ ! -f "$html_file" ]]; then
