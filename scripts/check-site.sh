@@ -131,6 +131,21 @@ if ! rg -q '/assets/styles\.[0-9a-f]{12}\.css' dist/index.html; then
   fail "CSS должен иметь версию по содержимому для сброса кэша"
 fi
 
+login_url='http://188.242.121.224:3002/login/'
+for page in index horeca uk posutochno klining; do
+  for prefix in "" "en/"; do
+    html_file="dist/${prefix}index.html"
+    [[ "$page" != "index" ]] && html_file="dist/${prefix}$page/index.html"
+    if ! rg -q "href=\"$login_url\"" "$html_file"; then
+      fail "неверная ссылка входа: $html_file"
+    fi
+  done
+done
+
+if rg -q 'https://app\.selfcheck\.pro' dist --glob '*.html'; then
+  fail "в сборке остались старые ссылки app.selfcheck.pro"
+fi
+
 if [[ "$(find assets/friends -type f -name '*.png' | wc -l | tr -d ' ')" != "24" ]]; then
   fail "в блоке «Наши друзья» должно быть 24 PNG-логотипа"
 fi
