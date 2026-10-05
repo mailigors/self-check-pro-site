@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" role="img" aria-labelledby="title desc">
+  <title id="title">Мобильный чек-лист SelfCheck Pro</title>
+  <desc id="desc">Телефон с отметкой о завершённой проверке</desc>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="52%" r="48%">
+      <stop offset="0" stop-color="#fff" stop-opacity=".72"/>
+      <stop offset=".58" stop-color="#fff" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".13"/>
+    </linearGradient>
+    <filter id="blur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+  <circle cx="386" cy="286" r="210" fill="url(#glow)"/>
+  <ellipse cx="388" cy="454" rx="178" ry="25" fill="#0078d4" opacity=".22" filter="url(#blur)"/>
+  <g transform="translate(232 22)">
+    <rect x="0" y="0" width="312" height="476" rx="54" fill="url(#screen)" stroke="#fff" stroke-opacity=".54" stroke-width="4"/>
+    <rect x="116" y="18" width="80" height="10" rx="5" fill="#118ce7" opacity=".48"/>
+    <circle cx="156" cy="242" r="104" fill="#fff" opacity=".28"/>
+    <circle cx="156" cy="242" r="72" fill="#fff" opacity=".33"/>
+    <path d="m112 241 29 30 61-70" fill="none" stroke="#159cf2" stroke-opacity=".5" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

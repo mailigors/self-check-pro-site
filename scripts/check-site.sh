@@ -44,6 +44,17 @@ REQUIRED_FILES=(
   assets/vendor/intl-tel-input/js/intlTelInputWithUtils.min.js
   assets/friends/ginza-project.png
   assets/friends/krivets-ptitsa.png
+  assets/images/hero-main-ru.jpg
+  assets/images/hero-main-en.jpg
+  assets/images/hero-horeca-ru.jpg
+  assets/images/hero-horeca-en.jpg
+  assets/images/hero-uk-ru.jpg
+  assets/images/hero-uk-en.jpg
+  assets/images/hero-posutochno-ru.jpg
+  assets/images/hero-posutochno-en.jpg
+  assets/images/hero-klining-ru.jpg
+  assets/images/hero-klining-en.jpg
+  assets/images/pilot-phone.svg
   robots.txt
   sitemap.xml
   logo.png
@@ -54,6 +65,25 @@ REQUIRED_FILES=(
 
 for file in "${REQUIRED_FILES[@]}"; do
   require_file "$file"
+done
+
+for page in index horeca uk posutochno klining; do
+  for prefix in "" "en/"; do
+    html_file="${prefix}index.html"
+    [[ "$page" != "index" ]] && html_file="${prefix}$page.html"
+    if ! rg -q 'class="hero-media"' "$html_file"; then
+      fail "на первом экране отсутствует новое изображение: $html_file"
+    fi
+    if ! rg -q 'fetchpriority="high"' "$html_file"; then
+      fail "главное изображение не помечено как приоритетное: $html_file"
+    fi
+    if ! rg -q 'width="[0-9]+" height="[0-9]+" alt="[^\"]+"' "$html_file"; then
+      fail "у главного изображения нет размеров или SEO-описания: $html_file"
+    fi
+    if ! rg -q 'assets/images/pilot-phone\.svg' "$html_file"; then
+      fail "в пилотном блоке отсутствует иллюстрация телефона: $html_file"
+    fi
+  done
 done
 
 if rg -q 'fonts\.(googleapis|gstatic)\.com' --glob '*.html' .; then
