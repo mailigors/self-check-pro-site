@@ -46,6 +46,8 @@ REQUIRED_FILES=(
   assets/friends/krivets-ptitsa.png
   assets/images/hero-main-ru.jpg
   assets/images/hero-main-en.jpg
+  assets/images/hero-main-ru.svg
+  assets/images/hero-main-en.svg
   assets/images/hero-horeca-ru.jpg
   assets/images/hero-horeca-en.jpg
   assets/images/hero-uk-ru.jpg
@@ -71,7 +73,7 @@ for page in index horeca uk posutochno klining; do
   for prefix in "" "en/"; do
     html_file="${prefix}index.html"
     [[ "$page" != "index" ]] && html_file="${prefix}$page.html"
-    if ! rg -q 'class="hero-media"' "$html_file"; then
+    if ! rg -q 'class="hero-media(?: [^"]*)?"' "$html_file"; then
       fail "на первом экране отсутствует новое изображение: $html_file"
     fi
     if ! rg -q 'fetchpriority="high"' "$html_file"; then

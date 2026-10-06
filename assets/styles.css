@@ -117,6 +117,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdro
   background:radial-gradient(circle,rgba(57,166,255,.16),rgba(57,166,255,0) 68%);
 }
 .hero-media>img{position:relative;z-index:1;display:block;width:min(100%,610px);height:auto;object-fit:contain}
+.hero-media-main>img{width:min(190%,980px)}
 
 /* phone mockup: реальные пропорции iPhone 430×932 (как фреймы в Figma),
    экран отрисован в натуральную величину и масштабируется через transform */
@@ -377,6 +378,7 @@ footer{border-top:1px solid var(--border-soft);padding:48px 0 40px;background:va
   .friend-logo img{max-height:58px}
   .hero-media{min-height:0;margin:0 -12px}
   .hero-media>img{width:min(112%,560px)}
+  .hero-media-main>img{width:min(230%,600px)}
   .hero-cta .btn{width:100%}
   .btn{white-space:normal;text-align:center}
   .nav-cta .btn-ghost{display:none}
