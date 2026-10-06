@@ -117,7 +117,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdro
   background:radial-gradient(circle,rgba(57,166,255,.16),rgba(57,166,255,0) 68%);
 }
 .hero-media>img{position:relative;z-index:1;display:block;width:min(100%,610px);height:auto;object-fit:contain}
-.hero-media-main>img{width:min(190%,980px)}
+.hero-media-main>img{width:min(132%,760px)}
 
 /* phone mockup: реальные пропорции iPhone 430×932 (как фреймы в Figma),
    экран отрисован в натуральную величину и масштабируется через transform */
@@ -217,10 +217,9 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdro
 
 /* pilot */
 .pilot{
-  background:linear-gradient(120deg,var(--brand-tertiary) 0%,var(--brand-primary) 100%);
+  background:linear-gradient(112deg,#0786ed 0%,#36a4fe 100%);
   border-radius:var(--radius-l);padding:38px 42px;color:#fff;position:relative;overflow:hidden;
 }
-.pilot::after{content:"";position:absolute;right:-90px;top:-90px;width:340px;height:340px;border-radius:50%;background:rgba(255,255,255,.10)}
 .pilot-in{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
 .pilot .flag{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:100px;padding:6px 13px;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
 .pilot h2{color:#fff}
@@ -228,8 +227,8 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdro
 .pilot p{color:rgba(255,255,255,.92);margin-top:12px;font-size:16px;max-width:44ch}
 .pilot .btn{background:#fff;color:var(--brand-tertiary);margin-top:22px;font-weight:600}
 .pilot .btn:hover{background:var(--content-primary);color:#fff}
-.pilot-visual{display:grid;place-items:center;align-self:stretch;min-height:360px}
-.pilot-visual img{display:block;width:min(100%,620px);height:auto;filter:drop-shadow(0 28px 34px rgba(0,77,146,.18))}
+.pilot-visual{position:relative;display:grid;place-items:end center;align-self:stretch;min-height:360px;margin:-38px -42px -38px 0;overflow:hidden}
+.pilot-visual img{display:block;width:min(118%,793px);max-width:none;height:auto;margin-bottom:-1px;filter:drop-shadow(0 24px 28px rgba(0,77,146,.14));-webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.04) 8%,rgba(0,0,0,.16) 15%,rgba(0,0,0,.4) 21%,rgba(0,0,0,.7) 26%,rgba(0,0,0,.9) 30%,#000 34%);mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.04) 8%,rgba(0,0,0,.16) 15%,rgba(0,0,0,.4) 21%,rgba(0,0,0,.7) 26%,rgba(0,0,0,.9) 30%,#000 34%)}
 .pilot-terms{display:grid;gap:10px;align-content:center}
 .pilot-terms div{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:var(--radius-s);padding:13px 16px}
 .pilot-terms b{display:block;font-size:14.5px;font-weight:600;margin-bottom:2px}
@@ -378,14 +377,15 @@ footer{border-top:1px solid var(--border-soft);padding:48px 0 40px;background:va
   .friend-logo img{max-height:58px}
   .hero-media{min-height:0;margin:0 -12px}
   .hero-media>img{width:min(112%,560px)}
-  .hero-media-main>img{width:min(230%,600px)}
+  .hero-media-main>img{width:min(126%,600px)}
   .hero-cta .btn{width:100%}
   .btn{white-space:normal;text-align:center}
   .nav-cta .btn-ghost{display:none}
   .pilot{padding:28px 22px;border-radius:18px}
   .pilot-in{gap:26px}
-  .pilot-visual{min-height:240px;margin:0 -12px -18px}
-  .pilot h2 br{display:none}
+  .pilot-visual{min-height:240px;margin:0 -22px -28px}
+  .pilot-visual img{width:min(128%,793px);-webkit-mask-image:none;mask-image:none}
+  .pilot h2 br{display:block}
   .pilot p{font-size:14.5px}
   .pilot .btn{width:100%;white-space:normal;text-align:center}
   .cta-box{padding:28px 18px;border-radius:18px;gap:26px}
