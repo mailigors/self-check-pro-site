@@ -57,6 +57,7 @@ REQUIRED_FILES=(
   assets/images/hero-klining-ru.jpg
   assets/images/hero-klining-en.jpg
   assets/images/pilot-phone.svg
+  assets/images/pilot-phone-promo.png
   robots.txt
   sitemap.xml
   logo.png
@@ -82,7 +83,7 @@ for page in index horeca uk posutochno klining; do
     if ! rg -q 'width="[0-9]+" height="[0-9]+" alt="[^\"]+"' "$html_file"; then
       fail "у главного изображения нет размеров или SEO-описания: $html_file"
     fi
-    if ! rg -q 'assets/images/pilot-phone\.svg' "$html_file"; then
+    if ! rg -q 'assets/images/pilot-phone(?:-promo)?\.(?:svg|png)' "$html_file"; then
       fail "в пилотном блоке отсутствует иллюстрация телефона: $html_file"
     fi
   done
