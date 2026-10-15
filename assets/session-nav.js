@@ -58,6 +58,53 @@
     location.replace(target + location.search + location.hash);
   };
 
+  const readStorage = (key) => {
+    try { return localStorage.getItem(key); } catch (error) { return null; }
+  };
+
+  const sessionAccessToken = async () => {
+    const access = readStorage('token');
+    if (tokenIsUsable(access)) return access;
+    const refresh = readStorage('refreshToken');
+    if (!refresh) return null;
+    const refreshExpiry = jwtExpiry(refresh);
+    if (refreshExpiry !== null && refreshExpiry <= Date.now()) return null;
+    try {
+      const response = await fetch('/api/v1/auth/refresh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken: refresh }),
+      });
+      if (!response.ok) return null;
+      const data = await response.json();
+      const nextAccess = data.accessToken || data.access_token || data.token || null;
+      const nextRefresh = data.refreshToken || data.refresh_token || null;
+      try {
+        if (nextAccess) localStorage.setItem('token', nextAccess);
+        if (nextRefresh) localStorage.setItem('refreshToken', nextRefresh);
+      } catch (error) {}
+      return nextAccess;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  // Кабинет после входа берёт язык из профиля и перезаписывает localStorage.
+  // Тот же PATCH, что и переключатель языка в приложении.
+  const persistLocale = async (locale) => {
+    const token = await sessionAccessToken();
+    if (!token) return;
+    await fetch('/api/v1/users/locale', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ locale: locale === 'ru' ? 'RU' : 'EN' }),
+      keepalive: true,
+    });
+  };
+
   const rememberLocale = (event) => {
     const link = event.target.closest && event.target.closest('.lang-switch a[hreflang]');
     if (!link) return;
@@ -65,6 +112,17 @@
     const locale = code.startsWith('en') ? 'en' : code.startsWith('ru') ? 'ru' : null;
     if (!locale) return;
     try { localStorage.setItem('locale', locale); } catch (error) {}
+    if (!hasAppSession()) return;
+    const openInNewTab = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
+    if (openInNewTab) {
+      persistLocale(locale);
+      return;
+    }
+    event.preventDefault();
+    const href = link.href;
+    const saved = persistLocale(locale).catch(() => {});
+    const limit = new Promise((resolve) => { setTimeout(resolve, 2000); });
+    Promise.race([saved, limit]).then(() => { location.href = href; });
   };
 
   const jwtExpiry = (token) => {
