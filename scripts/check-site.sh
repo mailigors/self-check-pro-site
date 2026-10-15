@@ -190,7 +190,7 @@ if ! rg -q '/assets/styles\.[0-9a-f]{12}\.css' dist/index.html; then
   fail "CSS должен иметь версию по содержимому для сброса кэша"
 fi
 
-login_url='http://188.242.121.224:3002/login/'
+login_url='/app/'
 for page in index horeca uk posutochno klining; do
   for prefix in "" "en/"; do
     html_file="dist/${prefix}index.html"
@@ -201,8 +201,8 @@ for page in index horeca uk posutochno klining; do
   done
 done
 
-if rg -q 'https://app\.selfcheck\.pro' dist --glob '*.html'; then
-  fail "в сборке остались старые ссылки app.selfcheck.pro"
+if rg -q 'https://app\.selfcheck\.pro|188\.242\.121\.224' dist --glob '*.html'; then
+  fail "в сборке остались старые ссылки кабинета"
 fi
 
 if [[ "$(find assets/friends -type f -name '*.png' | wc -l | tr -d ' ')" != "24" ]]; then

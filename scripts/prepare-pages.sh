@@ -69,6 +69,7 @@ for html in dist.rglob("*.html"):
     for original, versioned in asset_replacements.items():
         text = text.replace(original, versioned)
     if base and base != "/":
+        text = text.replace('href="/app/"', 'href="https://selfcheck.pro/app/"')
         text = pattern.sub(rf'\g<prefix>{base}/', text)
     if lead_endpoint:
         text = text.replace('data-endpoint=""', f'data-endpoint="{lead_endpoint}"')
