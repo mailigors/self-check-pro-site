@@ -186,6 +186,10 @@ if ! rg -q '/assets/lead-form\.[0-9a-f]{12}\.js' dist/index.html; then
   fail "JavaScript формы должен иметь версию по содержимому для сброса кэша"
 fi
 
+if ! rg -q '/assets/session-nav\.[0-9a-f]{12}\.js' dist/index.html; then
+  fail "скрипт кнопки кабинета должен иметь версию по содержимому для сброса кэша"
+fi
+
 if ! rg -q '/assets/styles\.[0-9a-f]{12}\.css' dist/index.html; then
   fail "CSS должен иметь версию по содержимому для сброса кэша"
 fi
@@ -197,6 +201,12 @@ for page in index horeca uk posutochno klining; do
     [[ "$page" != "index" ]] && html_file="dist/${prefix}$page/index.html"
     if ! rg -q "href=\"$login_url\"" "$html_file"; then
       fail "неверная ссылка входа: $html_file"
+    fi
+    if ! rg -q 'data-app-entry' "$html_file"; then
+      fail "нет метки сессии кабинета: $html_file"
+    fi
+    if ! rg -q '/assets/session-nav\.[0-9a-f]{12}\.js' "$html_file"; then
+      fail "не подключён скрипт кнопки кабинета: $html_file"
     fi
   done
 done
