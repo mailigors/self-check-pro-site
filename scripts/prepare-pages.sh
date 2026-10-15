@@ -27,6 +27,7 @@ mkdir -p "$DIST/en"
 cp "$ROOT/en/index.html" "$DIST/en/index.html"
 cp "$ROOT/assets/styles.css" "$DIST/assets/styles.css"
 cp "$ROOT/assets/lead-form.js" "$DIST/assets/lead-form.js"
+cp "$ROOT/assets/session-nav.js" "$DIST/assets/session-nav.js"
 cp -R "$ROOT/assets/friends" "$DIST/assets/friends"
 cp -R "$ROOT/assets/images" "$DIST/assets/images"
 cp -R "$ROOT/assets/fonts" "$DIST/assets/fonts"
@@ -57,7 +58,7 @@ dist = Path(os.environ["DIST"])
 pattern = re.compile(r'(?P<prefix>(?:href|src)=")/(?!/)')
 
 asset_replacements = {}
-for logical in ("assets/styles.css", "assets/lead-form.js"):
+for logical in ("assets/styles.css", "assets/lead-form.js", "assets/session-nav.js"):
     source = dist / logical
     digest = hashlib.sha256(source.read_bytes()).hexdigest()[:12]
     versioned = source.with_name(f"{source.stem}.{digest}{source.suffix}")
